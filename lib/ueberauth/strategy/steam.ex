@@ -109,7 +109,7 @@ defmodule Ueberauth.Strategy.Steam do
   end
 
   @spec retrieve_user(map) :: map | nil
-  defp retrieve_user(%{"openid.claimed_id" => "http://steamcommunity.com/openid/id/" <> id}) do
+  defp retrieve_user(%{"openid.claimed_id" => "https://steamcommunity.com/openid/id/" <> id}) do
     key =
       :ueberauth
       |> Application.fetch_env!(Ueberauth.Strategy.Steam)
