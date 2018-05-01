@@ -17,7 +17,7 @@
 
     ```elixir
     def deps do
-      [{:ueberauth_steam, "~> 0.1"}]
+      [{:ueberauth_steam, "~> 0.1.2", github: "kouwasi/ueberauth_steam"},]
     end
     ```
 
