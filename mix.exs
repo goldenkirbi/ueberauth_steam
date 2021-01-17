@@ -61,7 +61,7 @@ defmodule UeberauthSteam.Mixfile do
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.15", only: :dev},
       {:excoveralls, "~> 0.6", only: :test},
-      {:inch_ex, "~> 0.5", only: [:dev, :test]},
+      {:inch_ex, "~> 2.0", only: [:dev, :test]},
     ]
   end
 end
