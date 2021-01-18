@@ -14,7 +14,7 @@ defmodule UeberauthSteam.Mixfile do
 
       # Testing
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
       dialyzer: [ignore_warnings: "dialyzer.ignore-warnings"],
 
       # Docs
@@ -50,7 +50,7 @@ defmodule UeberauthSteam.Mixfile do
     [
       # Dependencies
       {:httpoison, "~> 0.11"},
-      {:poison, "~> 3.1"},
+      {:poison, "~> 4.0"},
       {:ueberauth, "~> 0.4"},
 
       # Testing
@@ -61,7 +61,7 @@ defmodule UeberauthSteam.Mixfile do
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.15", only: :dev},
       {:excoveralls, "~> 0.6", only: :test},
-      {:inch_ex, "~> 0.5", only: [:dev, :test]},
+      {:inch_ex, "~> 2.0", only: [:dev, :test]},
     ]
   end
 end
