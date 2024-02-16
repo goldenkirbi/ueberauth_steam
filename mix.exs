@@ -49,16 +49,16 @@ defmodule UeberauthSteam.Mixfile do
   defp deps do
     [
       # Dependencies
-      {:httpoison, "~> 0.11"},
-      {:poison, "~> 4.0"},
+      {:req, "~> 0.4"},
       {:ueberauth, "~> 0.4"},
+      {:oauth2, "~> 1.0 or ~> 2.0"},
 
       # Testing
-      {:meck, "~> 0.8.4", only: :test},
+      {:meck, "~> 0.9", only: :test},
 
       # Code Maintenance
-      {:credo, "~> 0.7", only: [:dev, :test]},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test]},
+      {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.15", only: :dev},
       {:excoveralls, "~> 0.6", only: :test},
       {:inch_ex, "~> 2.0", only: [:dev, :test]},
