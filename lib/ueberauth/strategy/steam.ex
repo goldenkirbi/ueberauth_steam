@@ -3,7 +3,8 @@ defmodule Ueberauth.Strategy.Steam do
   Steam OpenID for Überauth.
   """
 
-  use Ueberauth.Strategy
+  # This could be csrf safe if steam supported the state param properly
+  use Ueberauth.Strategy, ignores_csrf_attack: true
 
   alias Ueberauth.Auth.Info
   alias Ueberauth.Auth.Extra
@@ -15,37 +16,24 @@ defmodule Ueberauth.Strategy.Steam do
   """
   @spec handle_request!(Plug.Conn.t) :: Plug.Conn.t
   def handle_request!(conn) do
-    params =
-      %{
-        "openid.mode" => "checkid_setup",
-        "openid.realm" => callback_url(conn),
-        "openid.return_to" => callback_url(conn),
-        "openid.ns" => "http://specs.openid.net/auth/2.0",
-        "openid.claimed_id" => "http://specs.openid.net/auth/2.0/identifier_select",
-        "openid.identity" => "http://specs.openid.net/auth/2.0/identifier_select"
-      }
-      |> Map.to_list
-      |> with_state_param(conn)
+    params = %{
+      "openid.mode" => "checkid_setup",
+      "openid.realm" => callback_url(conn),
+      "openid.return_to" => callback_url(conn),
+      "openid.ns" => "http://specs.openid.net/auth/2.0",
+      "openid.claimed_id" => "http://specs.openid.net/auth/2.0/identifier_select",
+      "openid.identity" => "http://specs.openid.net/auth/2.0/identifier_select"
+    }
 
-    redirect!(conn, authorize_url!(params, options(conn)))
-  end
+    params = if conn.private[:ueberauth_state_param] do
+      Map.put(params, "state", conn.private[:ueberauth_state_param])
+    else
+      params
+    end
 
-  def client(opts \\ []) do
-    config = Application.get_env(:ueberauth, Ueberauth.Strategy.Steam.OAuth)
+    query = URI.encode_query(params)
 
-    opts = Keyword.merge(config, opts)
-
-    json_library = Ueberauth.json_library()
-
-    opts
-      |> OAuth2.Client.new()
-      |> OAuth2.Client.put_serializer("application/json", json_library)
-  end
-
-  def authorize_url!(params \\ [], opts \\ []) do
-    opts
-    |> client
-    |> OAuth2.Client.authorize_url!(params)
+    redirect!(conn, "https://steamcommunity.com/openid/login?" <> query)
   end
 
   @doc ~S"""
@@ -137,20 +125,16 @@ defmodule Ueberauth.Strategy.Steam do
 
     key =
       :ueberauth
-      |> Application.fetch_env!(Ueberauth.Strategy.Steam)
+      |> Application.fetch_env!(Ueberauth.Strategy.Steam.OAuth)
       |> Keyword.get(:api_key)
     url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" <> key <> "&steamids=" <> id
 
-    with {:ok, %Req.Response{body: body}} <- Req.get(url),
-         {:ok, user} <- json_decode(body) do
-      List.first(user.response.players)
-    else
+    case Req.get(url, decode_json: [keys: :atoms]) do
+      {:ok, %Req.Response{body: user}} ->
+        List.first(user.response.players)
+
       _ -> nil
     end
-  end
-
-  defp json_decode(body) do
-    Application.get_env(:ueberauth, Ueberauth, :json_library).decode(body, keys: :atoms)
   end
 
   @spec validate_user(map) :: boolean
