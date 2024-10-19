@@ -125,7 +125,7 @@ defmodule Ueberauth.Strategy.Steam do
 
     key =
       :ueberauth
-      |> Application.fetch_env!(Ueberauth.Strategy.Steam.OAuth)
+      |> Application.fetch_env!(Ueberauth.Strategy.Steam)
       |> Keyword.get(:api_key)
     url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" <> key <> "&steamids=" <> id
 
