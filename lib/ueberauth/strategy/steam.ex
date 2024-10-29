@@ -32,7 +32,6 @@ defmodule Ueberauth.Strategy.Steam do
     end
 
     query = URI.encode_query(params)
-
     redirect!(conn, "https://steamcommunity.com/openid/login?" <> query)
   end
 
@@ -93,7 +92,7 @@ defmodule Ueberauth.Strategy.Steam do
 
     %Info{
       image: user.avatar,
-      name: get_in(user, [:realname]),
+      name: get_in(user, [:personaname]),
       location: get_in(user, [:loccountrycode]),
       urls: %{
         Steam: user.profileurl,
@@ -109,9 +108,9 @@ defmodule Ueberauth.Strategy.Steam do
   @spec extra(Plug.Conn.t) :: Extra.t
   def extra(conn) do
     %Extra{
-      raw_info: %{
-        user: conn.private.steam_user
-      }
+      #raw_info: %{
+      #  user: conn.private.steam_user
+      #}
     }
   end
 
